@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import UserForm from "./UserForm";
 
 const UserListPage = () => {
   const [users, setUsers] = useState([]);
@@ -48,7 +49,14 @@ const UserListPage = () => {
   const handleSortChange = (event) => {
     setSortOption(event.target.value);
   };
-
+  const handleFormSubmit = (formData) => {
+    const newUser = {
+      id: Math.random().toString(),
+      ...formData,
+    };
+    setUsers((prevUsers) => [...prevUsers, newUser]);
+    setFilteredUsers((prevFilteredUsers) => [...prevFilteredUsers, newUser]);
+  };
   return (
     <div className="max-w-screen-xl mx-auto p-5 sm:p-10 md:p-16">
       <div className="mb-4 flex items-center">
@@ -69,6 +77,7 @@ const UserListPage = () => {
           <option value="company">Sort by Company name</option>
         </select>
       </div>
+      <UserForm onSubmit={handleFormSubmit} />
       <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-10">
         {filteredUsers.map((user) => (
           <div key={user.id} className="rounded overflow-hidden shadow-lg">
