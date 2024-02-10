@@ -7,6 +7,11 @@ const UserListPage = () => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("name");
+  const [showModal, setShowModal] = useState(false);
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
 
   useEffect(() => {
     fetch("https://dummyjson.com/users")
@@ -21,13 +26,13 @@ const UserListPage = () => {
   }, []);
 
   useEffect(() => {
-    // Filter users based on searchQuery when it changes
+
     const filtered = users.filter((user) =>
       `${user.firstName} ${user.lastName}`
         .toLowerCase()
         .includes(searchQuery.toLowerCase().trim())
     );
-    // Sort filtered users based on the selected option
+
     const sorted = filtered.sort((a, b) => {
       if (sortOption === "name") {
         return `${a.firstName} ${a.lastName}`.localeCompare(
@@ -49,14 +54,18 @@ const UserListPage = () => {
   const handleSortChange = (event) => {
     setSortOption(event.target.value);
   };
+
   const handleFormSubmit = (formData) => {
     const newUser = {
       id: Math.random().toString(),
       ...formData,
     };
     setUsers((prevUsers) => [...prevUsers, newUser]);
+
     setFilteredUsers((prevFilteredUsers) => [...prevFilteredUsers, newUser]);
+    setShowModal(false);
   };
+
   return (
     <div className="max-w-screen-xl mx-auto p-5 sm:p-10 md:p-16">
       <div className="mb-4 flex items-center">
@@ -76,8 +85,23 @@ const UserListPage = () => {
           <option value="email">Sort by email</option>
           <option value="company">Sort by Company name</option>
         </select>
+        <div className="p-4">
+          <button
+            onClick={toggleModal}
+            className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:bg-indigo-700"
+          >
+            Add
+          </button>
+        </div>
       </div>
-      <UserForm onSubmit={handleFormSubmit} />
+      {/* <UserForm onSubmit={handleFormSubmit} /> */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg">
+            <UserForm onSubmit={handleFormSubmit} toggleModal={toggleModal} />
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-10">
         {filteredUsers.map((user) => (
           <div key={user.id} className="rounded overflow-hidden shadow-lg">
@@ -89,17 +113,13 @@ const UserListPage = () => {
                   alt={`User ${user.id}`}
                 />
                 <div className="hover:bg-transparent transition duration-300 absolute bottom-0 top-0 right-0 left-0 bg-gray-900 opacity-25"></div>
-                <a href="#!">
-                  <div className="absolute bottom-0 left-0 bg-indigo-600 px-4 py-2 text-white text-sm hover:bg-white hover:text-indigo-600 transition duration-500 ease-in-out">
-                    Photos
-                  </div>
-                </a>
-                <a href="!#">
+
+                <p href="!#">
                   <div className="text-sm absolute top-0 right-0 bg-indigo-600 px-4 text-white rounded-full h-16 w-16 flex flex-col items-center justify-center mt-3 mr-3 hover:bg-white hover:text-indigo-600 transition duration-500 ease-in-out">
-                    <span className="font-bold">27</span>
-                    <small>March</small>
+                    <span className="font-bold">10</span>
+                    <small>Feb</small>
                   </div>
-                </a>
+                </p>
               </div>
             </Link>
             <div className="px-6 py-4">
@@ -109,9 +129,16 @@ const UserListPage = () => {
               >
                 {user.firstName} {user.lastName}
               </Link>
-              <p className="text-gray-500 text-sm">
-                The city that never sleeps
+              <p>Email:{user.email}</p>
+              <p>
+                Company: {user.company && user.company.name},{" "}
+                {user.company && user.company.department},{" "}
+                {user.company && user.company.title}
               </p>
+              {user.company &&
+                user.company.name && ( 
+                  <p className="text-gray-500 text-sm">{user.company.name}</p>
+                )}
             </div>
             <div className="px-6 py-4 flex flex-row items-center">
               <span className="py-1 text-sm font-regular text-gray-900 mr-1 flex flex-row items-center">
@@ -126,18 +153,7 @@ const UserListPage = () => {
                   y="0px"
                   viewBox="0 0 512 512"
                   xmlSpace="preserve"
-                >
-                  <g>
-                    <g>
-                      <path
-                        d="M256,0C114.837,0,0,114.837,0,256s114.837,256,256,256s256-114.837,256-256S397.163,0,256,0z M277.333,256
-              c0,11.797-9.536,21.333-21.333,21.333h-85.333c-11.797,0-21.333-9.536-21.333-21.333s9.536-21.333,21.333-21.333h64v-128
-              c0-11.797,9.536-21.333,21.333-21.333s21.333,9.536,21.333,21.333V256z"
-                      />
-                    </g>
-                  </g>
-                </svg>
-                <span className="ml-1">6 mins ago</span>
+                ></svg>
               </span>
             </div>
           </div>
