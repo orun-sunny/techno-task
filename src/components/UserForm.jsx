@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const UserForm = ({ onSubmit, toggleModal }) => {
   const [formData, setFormData] = useState({
-    image: "", 
+    image: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -35,9 +35,9 @@ const UserForm = ({ onSubmit, toggleModal }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     onSubmit(formData);
-    // Clear the form data after submission
+    // Clear the form data after click
     setFormData({
-      image: "", // Reset image field
+      image: "",
       firstName: "",
       lastName: "",
       email: "",
